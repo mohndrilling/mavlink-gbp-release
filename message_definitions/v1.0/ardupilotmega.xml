@@ -231,6 +231,16 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
+      <entry value="42652" name="MAV_CMD_NETTR_RETURN_TO_LAUNCH">
+        <description>Return to launch location of net tracking</description>
+        <param index="1">Empty</param>
+        <param index="2">Empty</param>
+        <param index="3">Empty</param>
+        <param index="4">Empty</param>
+        <param index="5">Empty</param>
+        <param index="6">Empty</param>
+        <param index="7">Empty</param>
+      </entry>
     </enum>
     <!-- AP_Limits Enums -->
     <enum name="LIMITS_STATE">
@@ -975,6 +985,10 @@
       <entry value="9" name="SUB_MODE_SURFACE"/>
       <entry value="16" name="SUB_MODE_POSHOLD"/>
       <entry value="19" name="SUB_MODE_MANUAL"/>
+      <entry value="20" name="SUB_MODE_MD_STABILIZE"/>
+      <entry value="21" name="SUB_MODE_MD_ALT_HOLD"/>
+      <entry value="22" name="SUB_MODE_MD_NET_TRACKING"/>
+      <entry value="23" name="SUB_MODE_MD_NET_CLEANING"/>
     </enum>
     <enum name="ROVER_MODE">
       <description>A mapping of rover flight modes for custom_mode field of heartbeat.</description>
@@ -1555,6 +1569,55 @@
       <field type="float[3]" name="angle_delta">Defines a rotation vector in body frame that rotates the vehicle from the previous to the current orientation.</field>
       <field type="float[3]" name="position_delta" units="m">Change in position from previous to current frame rotated into body frame (0=forward, 1=right, 2=down).</field>
       <field type="float" name="confidence" units="%">Normalised confidence value from 0 to 100.</field>
+    </message>
+    <!-- stereo vision based velocity message -->
+    <message id="11012" name="STEREO_VISION_ODOM">
+      <description>Stereo vision based estimation of distance and angle offset with regard to a viewed surface.</description>
+      <field name="time_usec" type="uint64_t" units="us">Timestamp of the message.</field>
+      <field name="time_delta_usec" type="uint64_t" units="us">Time since the lastly reported measurement.</field>
+      <field type="float" name="distance" units="m">Distance to the object in front</field>
+      <field type="float" name="delta_pitch" units="rad">Difference pitch with regard to target object</field>
+      <field type="float" name="delta_yaw" units="rad">Difference yaw with regard to target object</field>
+      <field type="float" name="confidence" units="%">Normalised confidence value from 0 to 100.</field>
+    </message>
+    <!-- net inspection message -->
+    <message id="11013" name="NET_INSPECTION">
+      <description>Message describing amount and distribution of meshes of a tracked net</description>
+      <field name="time_usec" type="uint64_t" units="us">Timestamp of the message.</field>
+      <field name="time_delta_usec" type="uint64_t" units="us">Time since the lastly reported measurement.</field>
+      <field name="mesh_distribution" type="float" units="">Proportion (0...1) of net meshes on left image side.</field>
+      <field name="mesh_count" type="uint64_t" units="">Absolute amount of currently visible net meshes.</field>
+    </message>
+    <!-- phase correlation message -->
+    <message id="11014" name="PHASE_CORR">
+      <description>Current and absolute translational shift between current and recent images</description>
+      <field name="time_usec" type="uint64_t" units="us">Timestamp (synced to UNIX time or since system boot).</field>
+      <field name="time_delta_usec" type="uint64_t" units="us">Time since the lastly reported measurement.</field>
+      <field type="float" name="phase_shift_x" units="subpixels">Translational x-shift between current and previous image.</field>
+      <field type="float" name="phase_shift_y" units="subpixels">Translational y-shift between current and previous image.</field>
+      <field type="float" name="phase_shift_sum_x" units="subpixels">Absolute translational x-shift between current and first image.</field>
+      <field type="float" name="phase_shift_sum_y" units="subpixels">Absolute translational y-shift between current and first image.</field>
+    </message>
+    <!-- State of the net tracking state machine. Definition in state enumeration AP_NetTracking/AP_NetTracking.h-->
+    <message id="11015" name="NETTRACKING_STATE">
+      <description>State of the net tracking state machine.</description>
+      <field type="uint8_t" name="state" units="">Net Tracking State.</field>
+      <field type="float" name="loop_progress" units="percent">Progress of full 360 degrees scan.</field>
+    </message>
+    <!-- nettracking marker message-->
+    <message id="11016" name="NETTRACKING_MARKER">
+      <description>Holding information about optical marker detected by aruco_detection node.</description>
+      <field name="time_usec" type="uint64_t" units="us">Timestamp (synced to UNIX time or since system boot).</field>
+      <field name="time_delta_usec" type="uint64_t" units="us">Time since the lastly reported measurement.</field>
+      <field type="uint8_t" name="marker_visible" units="">Boolean indicating whether any marker was detected (1 or 0)</field>
+      <field type="uint8_t" name="terminate" units="">Boolean indicating whether termination marker was detected (1 or 0)</field>
+      <field type="float" name="horizontal_pos" units="">Horizontal position of the upper detected marker (-1...+1)</field>
+    </message>
+    <!-- State of the net cleaning state machine. Definition in state enumeration AP_NetCleaning/AP_NetCleaning.h-->
+    <message id="11017" name="NETCLEANING_STATE">
+      <description>State of the net cleaning state machine.</description>
+      <field type="uint8_t" name="state" units="">Net Cleaning State.</field>
+      <field type="uint8_t" name="brush_motors_active">Whether the brush motors need to run during this state.</field>
     </message>
     <!-- Angle of Attack and Side Slip Angle message -->
     <message id="11020" name="AOA_SSA">
