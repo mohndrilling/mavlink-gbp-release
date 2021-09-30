@@ -1560,6 +1560,7 @@
       <description>Stereo vision based estimation of distance and angle offset with regard to a viewed surface.</description>
       <field name="time_usec" type="uint64_t" units="us">Timestamp of the message.</field>
       <field name="time_delta_usec" type="uint64_t" units="us">Time since the lastly reported measurement.</field>
+      <field type="uint8_t" name="camera_id" units="">Unique ID of the camera</field>
       <field type="float" name="distance" units="m">Distance to the object in front</field>
       <field type="float" name="delta_pitch" units="rad">Difference pitch with regard to target object</field>
       <field type="float" name="delta_yaw" units="rad">Difference yaw with regard to target object</field>
